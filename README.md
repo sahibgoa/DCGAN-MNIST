@@ -7,3 +7,5 @@ Images of sketches and photos downloaded from http://sketchy.eye.gatech.edu/. Fi
 Discriminator discriminates sketched photos from photographs. Network for doodle generating coming soon.
 
 Dependencies: python, numpy, scipy, tensorflow (gpu version recommended), pillow
+
+Running: python discriminator.py

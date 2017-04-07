@@ -1,13 +1,16 @@
-# somewhat based on https://www.tensorflow.org/get_started/mnist/pros
-# discriminates between photographs and sketches with high accuracy
-# author: David Liang (dliangsta)
+"""
+somewhat based on https://www.tensorflow.org/get_started/mnist/pros
+discriminates between photographs and sketches
 
+author: David Liang (dliangsta)
+"""
 import os
 import numpy as np
 import scipy.io as sio
 import scipy
 import tensorflow as tf
 import random
+
 
 # parameters, could probably use an arg parser in the future
 DIRECTORIES = ['photo', 'sketch'] # directories of photos and sketches
@@ -138,29 +141,40 @@ class Discriminator:
 class Dataset:
 
     def __init__(self):
+        # keeps track of which instance in the train and test sets to return next
         self.image_class_indices = [0, 0]
 
+        # photos in the first list, sketches in the second
         all_images = [[],[]]
         
+        # count of number of images read in
         self.total_count = 0
 
         # not a one liner because keeping track of count :(
         for directory in DIRECTORIES:
             for class_name in os.listdir(directory):
+                # keep track of how many images of this type are saved
                 count = 0
                 for file_name in os.listdir(os.path.join(directory,class_name)):
+                    # limit the number of images of this type that are kept
                     if count < NUM_TO_KEEP:
+                        # read in image, flatten
                         all_images[directory == DIRECTORIES[1]].append(self.__get_flatten_image(os.path.join(os.path.join(directory, class_name), file_name)))
+                        # increment counts
                         self.total_count += 1
-                    count += 1
-
+                        count += 1
+                    
+        # keep track of how many training and test images we create
         self.train_count = 0
         self.test_count = 0
+
         # train and test, each with photos and sketches
         self.train_images = [[],[]]
         self.test_images = [[],[]]
 
+        # partition into train and test
         for i in range(NUM_CLASSES):
+            # number of images to keep in train
             num_train = len(all_images[i]) * TRAIN_PROPORTION
 
             # randomly select images for train
@@ -176,7 +190,7 @@ class Dataset:
         print("%d total images loaded, %d in train and %d in test" % (self.total_count, self.train_count, self.test_count))
 
     def __get_flatten_image(self, file_name):
-        # read in image and flatten
+        # read in image, resize, flatten
         if USE_RGB:
             return np.ndarray.flatten(
                 np.rollaxis(
@@ -190,9 +204,11 @@ class Dataset:
                             file_name, True), (IM_SIZE_X, IM_SIZE_Y)))
 
     def next_batch(self, n):
-        imgs = []
-        labels = []
+        # returns
+        batch_images = []
+        batch_labels = []
 
+        # add n images and labels to the return lists
         for i in range(n):
             # 0 for photo, 1 for sketch
             index = random.randint(0,1) 
@@ -202,21 +218,26 @@ class Dataset:
                 random.shuffle(self.train_images[index])
                 self.image_class_indices[index] = 0
 
-            imgs.append(self.train_images[index][self.image_class_indices[index]])
-            labels.append([index == 0, index == 1])
+            batch_images.append(self.train_images[index][self.image_class_indices[index]])
+            batch_labels.append([index == 0, index == 1])
             
-            self.image_class_indices[index] = self.image_class_indices[index] + 1
+            # increase index
+            self.image_class_indices[index] += 1
 
-        return (imgs, labels)
+        return (batch_images, batch_labels)
 
     def get_test(self):
-        imgs = []
-        labels = []
+        # returns
+        test_images = []
+        test_labels = []
+
+        # add all the test image and labels to the return lists
         for i in range(NUM_CLASSES):
             for j in range(len(self.test_images[i])):
-                imgs.append(self.test_images[i][j])
-                labels.append([i == 0, i == 1])
-        return (imgs, labels)
+                test_images.append(self.test_images[i][j])
+                test_labels.append([i == 0, i == 1])
+
+        return (test_images, test_labels)
 
 
 if __name__ == "__main__":
