@@ -1,22 +1,26 @@
 """
-somewhat based on https://www.tensorflow.org/get_started/mnist/pros
-discriminates between photographs and sketches
-
-author: David Liang (dliangsta)
+The generator for the GAN. It attempts to create images that the discriminator thinks are real images and 
+not generated ones.
 """
 
 import config
-import dataset
+import discriminator
 import numpy as np
+import scipy
+import scipy.io as sio
 import tensorflow as tf
 import Util
 
 
-class Discriminator(object):
+class Generator(object):
 
-    def __init__(self):
+    def __init__(self, discrim: discriminator.Discriminator):
+        # The discriminator used to train the generator
+        self.discriminator = discrim
+
         # placeholders for input, output
-        self.x = tf.placeholder(tf.float32, shape=[None, np.prod(config.IM_SIZE_X * config.IM_SIZE_Y * config.NUM_CHANNELS)])
+        self.x = tf.placeholder(tf.float32,
+                                shape=[None, np.prod(config.IM_SIZE_X * config.IM_SIZE_Y * config.NUM_CHANNELS)])
         self.y = tf.placeholder(tf.float32, shape=[None, config.NUM_CLASSES])
         self.x_image = tf.reshape(self.x, [-1, config.IM_SIZE_Y, config.IM_SIZE_X, config.NUM_CHANNELS])
 
@@ -76,32 +80,9 @@ class Discriminator(object):
         # accuracy
         self.accuracy = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
 
-    def train_network(self, data: dataset):
-        # launch tensorflow session
-        with tf.Session() as sess:
-            # initialize tensorflow variables
-            sess.run(tf.global_variables_initializer())
+    # Uses the discriminator to get the outputs
+    def train_network(self):
+        pass
 
-            # run training epochs
-            for i in range(config.MAX_EPOCHS):
-                # get next training batch
-                batch = data.next_batch(config.BATCH_SIZE)
-
-                # run training step
-                self.train_step.run(feed_dict={self.x: batch[0], self.y: batch[1], self.keep_prob: config.DROPOUT_RATE})
-
-                # print accuracy every so often
-                if i % config.ACCURACY_FREQUENCY == 0:
-                    # get test data
-                    test_images, test_labels = data.get_test()
-
-                    # print accuracy
-                    print("step %d: test accuracy %g" % (i, self.accuracy.eval(feed_dict={
-                        self.x: test_images,
-                        self.y: test_labels,
-                        self.keep_prob: 1.0
-                    })))
-
-    # Return 1 if it thinks that the image is from the real dataset and 0 if it thinks its generated
-    def discriminate(self, image) -> int:
+    def generate(self) -> object:
         pass
