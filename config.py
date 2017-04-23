@@ -14,5 +14,5 @@ MAX_EPOCHS = 100000  # maximal number of epochs to run
 MAX_EPOCHS_NO_IMPROVEMENT = 1000  # maximal number of epochs to run while generator is not improving
 ACCURACY_FREQUENCY = 10  # how often to print accuracy
 BATCH_SIZE = 25  # how many instances per batch
-IM_SIZE_X = 128  # width of image to downscale to
-IM_SIZE_Y = 128  # height of image to downscale to
+IM_SIZE_X = 64  # width of image to downscale to
+IM_SIZE_Y = 64  # height of image to downscale to
