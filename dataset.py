@@ -6,7 +6,8 @@ import os
 import random
 import numpy as np
 import scipy
-import config
+from config import *
+
 
 
 class Dataset:
@@ -22,15 +23,15 @@ class Dataset:
         self.total_count = 0
 
         # not a one liner because keeping track of count :(
-        for directory in config.DIRECTORIES:
+        for directory in DIRECTORIES:
             for class_name in os.listdir(directory):
                 # keep track of how many images of this type are saved
                 count = 0
                 for file_name in os.listdir(os.path.join(directory, class_name)):
                     # limit the number of images of this type that are kept
-                    if count < config.NUM_TO_KEEP:
+                    if count < NUM_TO_KEEP:
                         # read in image, flatten
-                        all_images[directory == config.DIRECTORIES[1]].append(
+                        all_images[directory == DIRECTORIES[1]].append(
                             self.__get_flatten_image(os.path.join(os.path.join(directory, class_name), file_name)))
                         # increment counts
                         self.total_count += 1
@@ -45,9 +46,9 @@ class Dataset:
         self.test_images = [[], []]
 
         # partition into train and test
-        for i in range(config.NUM_CLASSES):
+        for i in range(NUM_CLASSES):
             # number of images to keep in train
-            num_train = len(all_images[i]) * config.TRAIN_PROPORTION
+            num_train = len(all_images[i]) * TRAIN_PROPORTION
 
             # randomly select images for train
             while len(self.train_images[i]) < num_train:
@@ -64,17 +65,17 @@ class Dataset:
 
     def __get_flatten_image(self, file_name):
         # read in image, resize, flatten
-        if config.USE_RGB:
+        if USE_RGB:
             return np.ndarray.flatten(
                 np.rollaxis(
                     scipy.misc.imresize(
                         scipy.misc.imread(
-                            file_name, False), (config.IM_SIZE_X, config.IM_SIZE_Y)), 2, 0))
+                            file_name, False), (IM_SIZE_X, IM_SIZE_Y)), 2, 0))
         else:
             return np.ndarray.flatten(
                 scipy.misc.imresize(
                     scipy.misc.imread(
-                        file_name, True), (config.IM_SIZE_X, config.IM_SIZE_Y)))
+                        file_name, True), (IM_SIZE_X, IM_SIZE_Y)))
 
     def next_batch(self, n):
         # returns
@@ -105,7 +106,7 @@ class Dataset:
         test_labels = []
 
         # add all the test image and labels to the return lists
-        for i in range(config.NUM_CLASSES):
+        for i in range(NUM_CLASSES):
             for j in range(len(self.test_images[i])):
                 test_images.append(self.test_images[i][j])
                 test_labels.append([i == 0, i == 1])
