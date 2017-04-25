@@ -2,17 +2,29 @@
  Configuration file for the GAN
 """
 
-DIRECTORIES = ['photo', 'sketch']  # directories of photos and sketches
-USE_RGB = True  # results are better when using grey only (set USE_RGB to false)
-NUM_CHANNELS = 3 if USE_RGB else 1  # number of color channels, 3 for RGB, 1 for grayscale
-NUM_TO_KEEP = 20  # keep NUM_TO_KEEP images from each type (max 25), decrease if python complains about RAM/memory
-INITIAL_LEARNING_RATE = 1e-4  # learning rate for optimizer
-DROPOUT_RATE = 0.5  # drop out rate for learning
-TRAIN_PROPORTION = .9  # proportion of images to keep as train, 1 - TRAIN_PROPORTION kept for test
-NUM_CLASSES = 2  # photos and sketches
-MAX_EPOCHS = 100000  # maximal number of epochs to run
-MAX_EPOCHS_NO_IMPROVEMENT = 1000  # maximal number of epochs to run while generator is not improving
-ACCURACY_FREQUENCY = 10  # how often to print accuracy
-BATCH_SIZE = 25  # how many instances per batch
-IM_SIZE_X = 64  # width of image to downscale to
-IM_SIZE_Y = 64  # height of image to downscale to
+import numpy as np
+
+DATA_PATH = 'data/mnist/'
+MAX_EPOCHS = 100  # maximal number of epochs to run
+ACCURACY_FREQUENCY = 50  # how often to print accuracy
+SAVE_FREQUENCY = 50
+BATCH_SIZE = 1024  # how many instances per batch
+IMAGE_SHAPE = [28, 28, 1]
+
+STRIDE = [1, 2, 2, 1]
+ETA = 0.0002
+STDDEV = 0.02
+DATASET_SIZE = 50000
+
+# GAN size params
+DIM_Z = 100
+DIM_Y = 10
+DIM_W1 = 1024
+DIM_W2 = 128
+DIM_W3 = 64
+DIM_IM = np.prod(IMAGE_SHAPE)
+
+DIM_H1 = 150
+DIM_H2 = 300
+
+KEEP_PROB = 0.7
