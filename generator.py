@@ -19,9 +19,9 @@ class Generator(object):
         self.params = [self.w1, self.w2, self.w3]
 
         # layers
-        self.h1 = tf.nn.relu(tf.matmul(z, self.w1))
-        self.h2 = tf.nn.relu(tf.matmul(self.h1, self.w2))
-        self.h3 = tf.nn.relu(tf.matmul(self.h2, self.w3))
+        self.h1 = tf_relu(self.z, self.w1)
+        self.h2 = tf_relu(self.h1, self.w2)
+        self.h3 = tf_relu(self.h2, self.w3)
 
         # output
         self.y_fake = tf.nn.tanh(self.h3)

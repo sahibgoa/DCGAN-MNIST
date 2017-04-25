@@ -7,8 +7,8 @@ from util import *
 class Discriminator(object):
 
     def __init__(self, x_real, x_fake):
-        # input
-        self.x = tf.concat([x_real, x_fake], 0)
+        # combine input for one pass
+        self.x = tf.concat([x_real, x_fake], axis=0)
 
         # weights of each layer
         self.w1 = tf_gaussian([DIM_IM, DIM_H2], name='d_w1')
@@ -19,8 +19,8 @@ class Discriminator(object):
         self.params = [self.w1, self.w2, self.w3]
 
         # layers
-        self.h1 = tf.nn.dropout(tf.nn.relu(tf.matmul(self.x, self.w1)), KEEP_PROB)
-        self.h2 = tf.nn.dropout(tf.nn.relu(tf.matmul(self.h1, self.w2)), KEEP_PROB)
+        self.h1 = tf.nn.dropout(tf_relu(self.x, self.w1), KEEP_PROB)
+        self.h2 = tf.nn.dropout(tf_relu(self.h1, self.w2), KEEP_PROB)
         self.h3 = tf.matmul(self.h2, self.w3)
 
         # separate discrimination of real and fake data
@@ -32,7 +32,6 @@ class Discriminator(object):
 
         # optimizer
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
-
 
     def discriminate(self):
         pass

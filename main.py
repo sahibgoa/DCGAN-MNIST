@@ -1,19 +1,19 @@
-import os
-import numpy as np
-import math
-from gan import *
-from util import *
+"""
+Loads the MNIST data, builds the GAN, and trains it.
+"""
+
 from tensorflow.examples.tutorials.mnist import input_data
+from gan import *
 
 def main():
     # load data
-    mnist = input_data.read_data_sets('MNIST_DATA', one_hot=True)
+    data = input_data.read_data_sets('MNIST_DATA', one_hot=True)
 
     # make model
     gan = GAN()
 
     # train model
-    gan.train(mnist)
+    gan.train(data)
 
 if __name__ == '__main__':
     main()
