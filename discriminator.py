@@ -28,7 +28,7 @@ class Discriminator(object):
         self.y_fake = tf.nn.sigmoid(tf.slice(self.h3, [BATCH_SIZE, 0], [-1, -1]))
 
         # loss
-        self.loss = -(tf.log(self.y_real) + tf.log(1 - self.y_fake))
+        self.loss = tf.reduce_mean(-(tf.log(self.y_real) + tf.log(1 - self.y_fake)))
 
         # optimizer
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)

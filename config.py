@@ -4,6 +4,7 @@
 
 import numpy as np
 
+SAVE_PATH = 'data/out/'
 MAX_EPOCHS = 100  # maximal number of epochs to run
 ACCURACY_FREQUENCY = 50  # how often to print accuracy
 SAVE_FREQUENCY = 50

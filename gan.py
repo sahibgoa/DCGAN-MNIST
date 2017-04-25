@@ -14,12 +14,16 @@ class GAN():
             # initialize globals
             sess.run(tf.global_variables_initializer())
             clear()
+            z_original = np.random.normal(0, 1, size=[BATCH_SIZE, DIM_Z])
 
             for epoch in range(MAX_EPOCHS):
                 for iteration in range(TRAIN_SIZE // BATCH_SIZE):
+                    # next MNIST batch
                     x_real, _= data.train.next_batch(BATCH_SIZE)
-                    z = np.random.normal(0,1, size=[BATCH_SIZE, DIM_Z])
-                    sess.run(self.d.optimizer, feed_dict={self.x_real:x_real, self.z:z})
-                    sess.run(self.g.optimizer, feed_dict={self.x_real:x_real, self.z:z})
+                    # random input to generator
+                    z = np.random.normal(0, 1, size=[BATCH_SIZE, DIM_Z])
 
-            
+                    # run optimizer ops
+                    _, d_loss = sess.run([self.d.optimizer, self.d.loss], feed_dict={self.x_real:x_real, self.z:z})
+                    _, g_loss = sess.run([self.g.optimizer, self.g.loss], feed_dict={self.x_real:x_real, self.z:z})
+                    print(d_loss, g_loss)

@@ -27,7 +27,7 @@ class Generator(object):
         self.y_fake = tf.nn.tanh(self.h3)
 
         # loss
-        self.loss = -tf.log(self.y_fake)
+        self.loss = tf.reduce_mean(-tf.log(self.y_fake))
 
         # optimizer
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
