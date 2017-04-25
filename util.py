@@ -4,6 +4,7 @@ Utility functions
 
 import numpy as np
 import tensorflow as tf
+import os
 from config import *
 
 
@@ -22,3 +23,5 @@ def save_sample(X, save_path):
 
     scipy.misc.imsave(save_path, img)
 
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')

@@ -1,6 +1,5 @@
 """
-The generator for the GAN. It attempts to create images that the discriminator thinks are real images and 
-not generated ones.
+Generates images like the training data.
 """
 
 from util import *
@@ -23,6 +22,8 @@ class Generator(object):
         self.h1 = tf.nn.relu(tf.matmul(z, self.w1))
         self.h2 = tf.nn.relu(tf.matmul(self.h1, self.w2))
         self.h3 = tf.nn.relu(tf.matmul(self.h2, self.w3))
+
+        # output
         self.y_fake = tf.nn.tanh(self.h3)
 
         # loss

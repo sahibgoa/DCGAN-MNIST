@@ -6,7 +6,7 @@ from util import *
 
 class Discriminator(object):
 
-    def __init__(self, x_real, x_fake, keep_prob):
+    def __init__(self, x_real, x_fake):
         # input
         self.x = tf.concat([x_real, x_fake], 0)
 
@@ -19,8 +19,8 @@ class Discriminator(object):
         self.params = [self.w1, self.w2, self.w3]
 
         # layers
-        self.h1 = tf.nn.dropout(tf.nn.relu(tf.matmul(self.x, self.w1)), keep_prob)
-        self.h2 = tf.nn.dropout(tf.nn.relu(tf.matmul(self.h1, self.w2)), keep_prob)
+        self.h1 = tf.nn.dropout(tf.nn.relu(tf.matmul(self.x, self.w1)), KEEP_PROB)
+        self.h2 = tf.nn.dropout(tf.nn.relu(tf.matmul(self.h1, self.w2)), KEEP_PROB)
         self.h3 = tf.matmul(self.h2, self.w3)
 
         # separate discrimination of real and fake data
