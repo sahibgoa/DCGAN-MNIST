@@ -14,5 +14,5 @@ class GAN():
     def generate_batch(self, batch_size):
         pass
 
-    def train(self, train_data, train_labels):
+    def train(self, data):
         pass
