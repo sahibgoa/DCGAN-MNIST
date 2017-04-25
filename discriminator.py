@@ -34,5 +34,5 @@ class Discriminator(object):
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
 
 
-    def discriminate(self, x, y):
+    def discriminate(self):
         pass
