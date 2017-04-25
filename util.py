@@ -18,3 +18,6 @@ def tf_relu(A, B):
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def save_sample(X, path):
+    pass
