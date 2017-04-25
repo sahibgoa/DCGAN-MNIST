@@ -6,9 +6,9 @@ from util import *
 
 class Generator(object):
 
-    def __init__(self, z):
+    def __init__(self):
         # input
-        self.z = z
+        self.z = tf.placeholder(tf.float32, [BATCH_SIZE, DIM_Z])
 
         # weights of each layer
         self.w1 = tf_gaussian([DIM_Z, DIM_H1], name='g_w1')
@@ -32,5 +32,3 @@ class Generator(object):
         # optimizer
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
         
-    def generate(self):
-        pass

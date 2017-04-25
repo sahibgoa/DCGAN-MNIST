@@ -6,9 +6,14 @@ from util import *
 
 class Discriminator(object):
 
-    def __init__(self, x_real, x_fake):
+    def __init__(self):
+        # inputs
+        self.x_real = tf.placeholder(tf.float32, [BATCH_SIZE, DIM_IM])
+        self.x_fake = tf.placeholder(tf.float32, [BATCH_SIZE, DIM_IM])
+        
         # combine input for one pass
-        self.x = tf.concat([x_real, x_fake], axis=0)
+        self.x = tf.concat([self.x_real, self.x_fake], axis=0)
+
 
         # weights of each layer
         self.w1 = tf_gaussian([DIM_IM, DIM_H2], name='d_w1')
@@ -33,5 +38,3 @@ class Discriminator(object):
         # optimizer
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
 
-    def discriminate(self):
-        pass
