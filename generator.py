@@ -31,5 +31,5 @@ class Generator(object):
         # optimizer
         self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
         
-    def generate(self, Z, Y):
+    def generate(self):
         pass
