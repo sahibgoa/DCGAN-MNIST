@@ -10,8 +10,10 @@ SAVE_FREQUENCY = 50
 BATCH_SIZE = 1024  # how many instances per batch
 IMAGE_SHAPE = [28, 28, 1]
 ETA = 0.0002
+STDDEV = 0.1
 
 DIM_IM = np.prod(IMAGE_SHAPE)
+DIM_Z = 100
 DIM_H1 = 150
 DIM_H2 = 300
 

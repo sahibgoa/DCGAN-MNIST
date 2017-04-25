@@ -1,12 +1,13 @@
 import os
 import numpy as np
+import math
 from gan import *
 from util import *
-import math
+from tensorflow.examples.tutorials.mnist import input_data
 
 def main():
     # load data
-    mnist = input_data.read_data_sets('MNIST_DATA', one_hot=True))
+    mnist = input_data.read_data_sets('MNIST_DATA', one_hot=True)
 
     # make model
     gan = GAN()
