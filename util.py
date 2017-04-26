@@ -11,10 +11,10 @@ from config import *
 
 
 def tf_gaussian(shape, name, mean=0., stddev=STDDEV):
-    return tf.Variable(tf.random_normal(shape=shape, mean=mean, stddev=stddev), name=name)
+    return tf.Variable(tf.truncated_normal(shape=shape, mean=mean, stddev=stddev), name=name, dtype=tf.float32)
 
 def tf_zeros(shape, name):
-    return tf.Variable(tf.zeros(shape), name=name)
+    return tf.Variable(tf.zeros(shape), name=name, dtype=tf.float32)
 
 def tf_relu(A, B, C):
     return tf.nn.relu(tf.matmul(A,B) + C)
