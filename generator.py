@@ -23,10 +23,14 @@ class Generator(object):
         # layers
         self.h1 = tf_relu(tf.matmul(self.z, self.w1) + self.b1)
         self.h2 = tf_relu(tf.matmul(self.h1, self.w2) + self.b2)
-        self.h3 = tf.matmul(self.h2, self.w3) + self.b3
+        self.h3 = tf.nn.tanh(tf.matmul(self.h2, self.w3) + self.b3)
 
         # output
-        self.x_fake = tf.nn.tanh(self.h3)
+        self.x_fake = self.h3
 
         # trainable parameters
-        self.params = [self.w1, self.b1, self.w2, self.b2, self.w3, self.b3]
+        self.params = [self.w1, self.w2, self.w3]
+
+        # if using bias
+        if USE_BIAS:
+            self.params = np.concatenate([self.params, [self.b1, self.b2, self.b3]])

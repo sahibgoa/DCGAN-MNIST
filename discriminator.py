@@ -34,4 +34,8 @@ class Discriminator(object):
         self.y_fake = tf.slice(self.h3, [BATCH_SIZE, 0], [-1, -1])
 
         # trainable parameters
-        self.params = [self.w1, self.b1, self.w2, self.b2, self.w3, self.b3]
+        self.params = [self.w1, self.w2, self.w3]
+
+        # if using bias
+        if USE_BIAS:
+            self.params = np.concatenate([self.params, [self.b1, self.b2, self.b3]])

@@ -11,7 +11,7 @@ SAMPLE_SIZE = 1 # size of sample to save every epoch
 TRAIN_SIZE = 60000 # size of training set
 MAX_EPOCHS = 1000  # maximal number of epochs to run
 BATCH_SIZE = 128  # number of instances per batch
-ETA = 0.0002 # learning rate
+ETA = 0.0001 # learning rate
 STDDEV = 0.1 # default standard deviation for weights, sensitive
 
 DIM_IM = np.prod(IMAGE_SHAPE) # size of flattened image
@@ -27,3 +27,4 @@ RANDOM_MEAN = 0.0 # mean for random input to generator
 RANDOM_STDDEV = 1. # standard deviation for random input to generator
 
 USE_XAVIER = True # use xavier initializer 
+USE_BIAS = False # use biases, might be better without
