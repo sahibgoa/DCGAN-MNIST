@@ -19,8 +19,8 @@ class GAN():
 
         if USE_REGULARIZATION:
             # L2 regularization
-            self.d_loss += 0.01 * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.d.params])
-            self.g_loss += 0.01 * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.g.params])
+            self.d_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.d.params])
+            self.g_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.g.params])
 
 
         # optimizers
