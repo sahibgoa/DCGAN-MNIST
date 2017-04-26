@@ -18,3 +18,6 @@ DIM_H2 = 300
 KEEP_PROB = 0.5 # for drop out
 BETA1 = 0.5 # parameter for optimizer
 LEAK = 0.2
+RANDOM_MEAN = 0.0 # mean for random input to generator
+RANDOM_STDDEV = 1. # standard deviation for random input to generator
+SAMPLE_SIZE = 1 # size of sample to save every epoch

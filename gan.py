@@ -28,7 +28,7 @@ class GAN():
             clear()
 
             # same random numbers for all saved samples
-            z_sample = np.random.normal(0, 1, size=[1, DIM_Z])
+            z_sample = np.random.normal(RANDOM_MEAN, RANDOM_STDDEV, size=[SAMPLE_SIZE, DIM_Z])
 
             # train
             for epoch in range(MAX_EPOCHS):
@@ -43,7 +43,7 @@ class GAN():
                     x_real = 2 * (x_real - 0.5)
                     
                     # random input to generator
-                    z = np.random.normal(0, 1, size=[BATCH_SIZE, DIM_Z])
+                    z = np.random.normal(RANDOM_MEAN, RANDOM_STDDEV, size=[BATCH_SIZE, DIM_Z])
 
                     # feed dict for all ops
                     feed_dict = {self.d.x_real:x_real, self.g.z:z}
