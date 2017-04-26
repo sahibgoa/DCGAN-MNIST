@@ -6,10 +6,10 @@ from util import *
 
 class Discriminator(object):
 
-    def __init__(self, fake):
+    def __init__(self, x_fake):
         # inputs
         self.x_real = tf.placeholder(tf.float32, [None, DIM_IM])
-        self.x_fake = fake
+        self.x_fake = x_fake
         
         # combine input for one pass
         self.x = tf.concat([self.x_real, self.x_fake], axis=0)
