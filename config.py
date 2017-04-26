@@ -19,7 +19,7 @@ DIM_Z = 100 # size of input to generator
 DIM_H1 = 150 # size of 1st hidden layer in generator
 DIM_H2 = 300 # size of 2nd hidden layer in generator
 
-KEEP_PROB = 1.0 # for drop out
+KEEP_PROB = 0.5 # for drop out
 BETA1 = 0.5 # parameter for optimizer
 LEAK = 0.2 # slope of leaky relu
 
