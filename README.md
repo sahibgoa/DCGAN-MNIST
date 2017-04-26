@@ -10,4 +10,4 @@ python, numpy, scipy, tensorflow (gpu version recommended), pillow
 `python main.py`
 
 ##### Compatability
-Only tested on windows with python 3.5.2, numpy+mkl 1.12.1, scipy 0.19.0, tensorflow-gpu 1.0.1, pillow 4.1.0.
+Only tested on windows with python 3.5.2, numpy+mkl 1.12.1, scipy 0.19.0, tensorflow-gpu 1.0.1.
