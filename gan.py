@@ -7,6 +7,7 @@ from discriminator import *
 from generator import *
 
 class GAN():
+
     def __init__(self):
         # generator and discriminator
         self.g = Generator()
@@ -19,7 +20,6 @@ class GAN():
         # optimizers
         self.d_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.d_loss, var_list=self.d.params)
         self.g_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.g_loss, var_list=self.g.params)
-
 
     def train(self, data):
         with tf.Session() as sess:
@@ -45,9 +45,16 @@ class GAN():
                     # random input to generator
                     z = np.random.normal(0, 1, size=[BATCH_SIZE, DIM_Z])
 
-                    # run optimizer ops
-                    _, _, d_loss_curr, g_loss_curr = sess.run([self.d_optimizer, self.g_optimizer, self.d_loss, self.g_loss], feed_dict={self.d.x_real:x_real, self.g.z:z})
+                    # feed dict for all ops
+                    feed_dict = {self.d.x_real:x_real, self.g.z:z}
 
+                    # run optimizer ops
+                    sess.run(self.d_optimizer, feed_dict)
+                    sess.run(self.g_optimizer, feed_dict)
+
+                    # get losses
+                    d_loss_curr, g_loss_curr = sess.run([self.d_loss, self.g_loss], feed_dict)
+                    
                     # increment totals
                     avg_d_loss += d_loss_curr
                     avg_g_loss += g_loss_curr
