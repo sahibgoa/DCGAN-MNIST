@@ -8,8 +8,8 @@ SAVE_PATH = 'data/out/' # save path
 IMAGE_SHAPE = [28, 28] # dimensions of image in MNIST dataset
 SAMPLE_SIZE = 1 # size of sample to save every epoch
 
-TRAIN_SIZE = 60000 # size of training set
-MAX_EPOCHS = 1000  # maximal number of epochs to run
+TRAIN_SIZE = 60000 # size of MNIST training set
+MAX_EPOCHS = 500  # maximal number of epochs to run, 100 is probably enough
 BATCH_SIZE = 128  # number of instances per batch
 ETA = 0.0001 # learning rate
 STDDEV = 0.1 # default standard deviation for weights, sensitive
@@ -28,3 +28,4 @@ RANDOM_STDDEV = 1. # standard deviation for random input to generator
 
 USE_XAVIER = True # use xavier initializer 
 USE_BIAS = False # use biases, might be better without
+USE_REGULARIZATION = True # use regularizer

@@ -17,6 +17,12 @@ class GAN():
         self.d_loss = tf.reduce_mean(-tf.log(self.d.y_real) - tf.log(1 - self.d.y_fake))
         self.g_loss = tf.reduce_mean(-tf.log(self.d.y_fake))
 
+        if USE_REGULARIZATION:
+            # L2 regularization
+            self.d_loss += 0.01 * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.d.params])
+            self.g_loss += 0.01 * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.g.params])
+
+
         # optimizers
         self.d_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.d_loss, var_list=self.d.params)
         self.g_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.g_loss, var_list=self.g.params)
@@ -38,27 +44,22 @@ class GAN():
 
                 # minibatch
                 for iteration in range(TRAIN_SIZE // BATCH_SIZE):
-                    # next MNIST batch
+                    # next MNIST batch, adjust for most values being 0
                     x_real, _= data.train.next_batch(BATCH_SIZE)
-                    # because most values are 0
                     x_real = 2 * (x_real - 0.5)
-                    
+
                     # random input to generator
                     z = np.random.normal(RANDOM_MEAN, RANDOM_STDDEV, size=[BATCH_SIZE, DIM_Z])
-
+                    
                     # feed dict for all ops
                     feed_dict = {self.d.x_real:x_real, self.g.z:z}
-
-                    # train discriminator
+                    
+                    # train discriminator and then generator
                     sess.run(self.d_optimizer, feed_dict)
-                    
-                    # train generator
                     sess.run(self.g_optimizer, feed_dict)
-
-                    # get losses
-                    d_loss_curr, g_loss_curr = sess.run([self.d_loss, self.g_loss], feed_dict)
                     
-                    # increment totals
+                    # get losses and increment totals
+                    d_loss_curr, g_loss_curr = sess.run([self.d_loss, self.g_loss], feed_dict)
                     avg_d_loss += d_loss_curr
                     avg_g_loss += g_loss_curr
 
