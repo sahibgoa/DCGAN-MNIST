@@ -18,7 +18,7 @@ def tf_relu(A, B, C, leaky=False):
     if leaky:
         return tf.nn.relu(tf.matmul(A,B) + C)
     else:
-        leak = 0.2
+        leak = LEAK
         X = tf.matmul(A,B)
         l1 = 0.5 * (1 + leak)
         l2 = 0.5 * (1 - leak)
