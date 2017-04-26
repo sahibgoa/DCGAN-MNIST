@@ -63,7 +63,7 @@ class GAN():
                     avg_g_loss += g_loss_curr
 
                 # print out average losses and epoch
-                print(epoch, ": ", avg_d_loss / (TRAIN_SIZE // BATCH_SIZE + 1), avg_g_loss / (TRAIN_SIZE // BATCH_SIZE + 1))
+                print("epoch: %03d: d=%01.9f g=%01.9f" % (epoch, avg_d_loss / (TRAIN_SIZE // BATCH_SIZE + 1), avg_g_loss / (TRAIN_SIZE // BATCH_SIZE + 1)))
 
                 # save sample
                 sample = sess.run(self.g.x_fake, feed_dict={self.g.z:z_sample})

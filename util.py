@@ -8,18 +8,22 @@ import os
 from config import *
 import scipy.misc
 
-def tf_gaussian(shape, name=None, mean=0., stddev=STDDEV):
-    return tf.Variable(tf.truncated_normal(shape=shape, mean=mean, stddev=stddev), name=name)
+def tf_gaussian(shape, name=None, mean=0., stddev=STDDEV, xavier=USE_XAVIER):
+    if xavier:
+        return tf.get_variable(name=name, shape=shape, initializer=tf.contrib.layers.xavier_initializer())
+    else:
+        return tf.Variable(tf.truncated_normal(shape=shape, mean=mean, stddev=stddev), name=name)
 
 def tf_zeros(shape, name=None):
     return tf.Variable(tf.zeros(shape), name=name)
 
-def tf_relu(A, B, C, leaky=False):
+def tf_relu(X, leaky=False):
     if leaky:
-        X = tf.matmul(A,B)
-        return ((1 + LEAK) / 2 * X) + ((1 - LEAK) / 2 * tf.abs(X))
+        X = ((1 + LEAK) / 2 * X) + ((1 - LEAK) / 2 * tf.abs(X))
     else:
-        return tf.nn.relu(tf.matmul(A, B) + C)
+        X = tf.nn.relu(X)
+        
+    return X
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
