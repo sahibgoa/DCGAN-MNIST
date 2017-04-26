@@ -15,13 +15,11 @@ def tf_zeros(shape, name=None):
     return tf.Variable(tf.zeros(shape), name=name, dtype=tf.float32)
 
 def tf_relu(A, B, C, leaky=False):
-    if not leaky:
-        return tf.nn.relu(tf.matmul(A,B) + C)
-    else:
+    if leaky:
         X = tf.matmul(A,B)
-        l1 = 0.5 * (1 + LEAK)
-        l2 = 0.5 * (1 - LEAK)
-        return l1 * X + l2 * tf.abs(X)
+        return ((1 + LEAK) / 2 * X) + ((1 - LEAK) / 2 * tf.abs(X))
+    else:
+        return tf.nn.relu(tf.matmul(A,B) + C)
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')

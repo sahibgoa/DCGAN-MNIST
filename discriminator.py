@@ -25,7 +25,7 @@ class Discriminator(object):
         self.b3 = tf_zeros([1])
 
         # layers
-        self.h1 = tf.nn.dropout(tf_relu(self.x, self.w1, self.b1, leaky=True), KEEP_PROB)
+        self.h1 = tf.nn.dropout(tf_relu(self.x,  self.w1, self.b1, leaky=True), KEEP_PROB)
         self.h2 = tf.nn.dropout(tf_relu(self.h1, self.w2, self.b2, leaky=True), KEEP_PROB)
         self.h3 = tf.nn.sigmoid(tf.matmul(self.h2, self.w3) + self.b3)
 

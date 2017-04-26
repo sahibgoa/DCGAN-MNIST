@@ -14,7 +14,7 @@ class GAN():
         self.d = Discriminator(self.g.x_fake)
 
         # losses
-        self.d_loss = tf.reduce_mean(-(tf.log(self.d.y_real) + tf.log(1 - self.d.y_fake)))
+        self.d_loss = tf.reduce_mean(-tf.log(self.d.y_real) - tf.log(1 - self.d.y_fake))
         self.g_loss = tf.reduce_mean(-tf.log(self.d.y_fake))
 
         # optimizers
@@ -22,6 +22,7 @@ class GAN():
         self.g_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.g_loss, var_list=self.g.params)
 
     def train(self, data):
+        # launch tf graph
         with tf.Session() as sess:
             # initialize globals
             sess.run(tf.global_variables_initializer())
@@ -48,8 +49,10 @@ class GAN():
                     # feed dict for all ops
                     feed_dict = {self.d.x_real:x_real, self.g.z:z}
 
-                    # run optimizer ops
+                    # train discriminator
                     sess.run(self.d_optimizer, feed_dict)
+                    
+                    # train generator
                     sess.run(self.g_optimizer, feed_dict)
 
                     # get losses
