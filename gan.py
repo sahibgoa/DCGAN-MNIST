@@ -1,3 +1,7 @@
+"""
+GAN network that handles the training of the generator and discriminator.
+"""
+
 from util import *
 from discriminator import *
 from generator import *
