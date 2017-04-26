@@ -33,6 +33,8 @@ class GAN():
                 for iteration in range(TRAIN_SIZE // BATCH_SIZE):
                     # next MNIST batch
                     x_real, _= data.train.next_batch(BATCH_SIZE)
+                    # because most values are 0
+                    x_real = 2 * (x_real - 0.5)
                     
                     # random input to generator
                     z = np.random.normal(0, 1, size=[BATCH_SIZE, DIM_Z])
