@@ -4,7 +4,7 @@
 
 import numpy as np
 
-SAVE_PATH = 'data/out/sample_%04d.jpg'
+SAVE_PATH = 'data/out/'
 MAX_EPOCHS = 1000  # maximal number of epochs to run
 BATCH_SIZE = 128  # number of instances per batch
 ETA = 0.0002 # learning rate

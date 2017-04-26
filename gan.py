@@ -48,10 +48,13 @@ class GAN():
                     # run optimizer ops
                     _, _, d_loss_curr, g_loss_curr = sess.run([self.d_optimizer, self.g_optimizer, self.d_loss, self.g_loss], feed_dict={self.d.x_real:x_real, self.g.z:z})
 
+                    # increment totals
                     avg_d_loss += d_loss_curr
                     avg_g_loss += g_loss_curr
 
-
+                # print out average losses and epoch
                 print(epoch, ": ", avg_d_loss / (TRAIN_SIZE // BATCH_SIZE + 1), avg_g_loss / (TRAIN_SIZE // BATCH_SIZE + 1))
+
+                # save sample
                 sample = sess.run(self.g.x_fake, feed_dict={self.g.z:z_sample})
-                save_sample(sample, SAVE_PATH % epoch)
+                save_sample(sample, SAVE_PATH + 'sample_%04d.jpg' % epoch)
