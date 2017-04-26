@@ -6,10 +6,10 @@ from util import *
 
 class Discriminator(object):
 
-    def __init__(self):
+    def __init__(self, fake):
         # inputs
         self.x_real = tf.placeholder(tf.float32, [BATCH_SIZE, DIM_IM])
-        self.x_fake = tf.placeholder(tf.float32, [BATCH_SIZE, DIM_IM])
+        self.x_fake = fake
         
         # combine input for one pass
         self.x = tf.concat([self.x_real, self.x_fake], axis=0)
@@ -33,10 +33,4 @@ class Discriminator(object):
         # separate discrimination of real and fake data
         self.y_real = tf.nn.sigmoid(tf.slice(self.h3, [0, 0], [BATCH_SIZE, -1]))
         self.y_fake = tf.nn.sigmoid(tf.slice(self.h3, [BATCH_SIZE, 0], [-1, -1]))
-
-        # loss
-        self.loss = tf.reduce_mean(-(tf.log(self.y_real) + tf.log(1 - self.y_fake)))
-
-        # optimizer
-        self.optimizer = tf.train.AdamOptimizer(ETA).minimize(self.loss, var_list=self.params)
 
