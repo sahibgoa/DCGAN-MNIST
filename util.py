@@ -14,11 +14,18 @@ def tf_gaussian(shape, name=None, mean=0., stddev=STDDEV):
 def tf_zeros(shape, name=None):
     return tf.Variable(tf.zeros(shape), name=name, dtype=tf.float32)
 
-def tf_relu(A, B, C):
-    return tf.nn.relu(tf.matmul(A,B) + C)
+def tf_relu(A, B, C, leaky=False):
+    if leaky:
+        return tf.nn.relu(tf.matmul(A,B) + C)
+    else:
+        leak = 0.2
+        X = tf.matmul(A,B)
+        l1 = 0.5 * (1 + leak)
+        l2 = 0.5 * (1 - leak)
+        return l1 * X + l2 * tf.abs(X)
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def save_sample(batch, path):
-    scipy.misc.imsave(path, np.reshape(batch, IMAGE_SHAPE))
+    scipy.misc.imsave(path, np.reshape(batch/2 + 0.5, IMAGE_SHAPE))
