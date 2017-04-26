@@ -5,15 +5,13 @@ Utility functions.
 import numpy as np
 import tensorflow as tf
 import os
-import math
-import scipy.misc
 from config import *
+import scipy.misc
 
-
-def tf_gaussian(shape, name, mean=0., stddev=STDDEV):
+def tf_gaussian(shape, name=None, mean=0., stddev=STDDEV):
     return tf.Variable(tf.truncated_normal(shape=shape, mean=mean, stddev=stddev), name=name, dtype=tf.float32)
 
-def tf_zeros(shape, name):
+def tf_zeros(shape, name=None):
     return tf.Variable(tf.zeros(shape), name=name, dtype=tf.float32)
 
 def tf_relu(A, B, C):
@@ -22,5 +20,5 @@ def tf_relu(A, B, C):
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def save_sample(X, path):
-    pass
+def save_sample(batch, path):
+    scipy.misc.imsave(path, np.reshape(batch, IMAGE_SHAPE))
