@@ -7,7 +7,7 @@ from gan import *
 
 def main():
     # load data
-    data = input_data.read_data_sets('MNIST_DATA', one_hot=True)
+    data = input_data.read_data_sets('data/mnist/', one_hot=True)
 
     # make model
     gan = GAN()
