@@ -15,5 +15,6 @@ def main():
     # train model
     gan.train(data)
 
+
 if __name__ == '__main__':
     main()

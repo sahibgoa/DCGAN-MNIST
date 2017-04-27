@@ -1,4 +1,4 @@
-###Stuff that should get done (put your name next to it please)
+### Stuff that should get done (put your name next to it please)
 
 -batchnorm (david: done, but pretty bad so removed)
 

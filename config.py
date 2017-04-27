@@ -28,5 +28,6 @@ RANDOM_STDDEV = 1. # standard deviation for random input to generator
 
 USE_XAVIER = True # use xavier initializer 
 USE_BIAS = False # use biases, might be better without
-USE_REGULARIZATION = False # regularize
+USE_L1 = False # Use L1 regularization
+USE_L2 = False # Use L2 regularization
 LAMBDA = 0.01 # regularization weight

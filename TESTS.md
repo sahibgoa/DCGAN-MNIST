@@ -1,4 +1,4 @@
-#tests to run:
+# tests to run:
 
 using batch norm: worse
 
@@ -13,3 +13,5 @@ different weight initialization params
 different learning rates
 
 different hidden unit sizes
+
+different batch sizes

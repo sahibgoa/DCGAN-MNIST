@@ -20,16 +20,21 @@ class GAN():
         # losses
         self.d_loss = tf.reduce_mean(-tf.log(self.d.y_real) - tf.log(1 - self.d.y_fake))
         self.g_loss = tf.reduce_mean(-tf.log(self.d.y_fake))
+            
+        if USE_L1:
+            # L1 regularization
+            self.d_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.abs(x)) for x in self.d.params])
+            self.g_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.abs(x)) for x in self.g.params])
 
-        if USE_REGULARIZATION:
+        if USE_L2:
             # L2 regularization
             self.d_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.d.params])
             self.g_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.g.params])
 
-
         # optimizers
         self.d_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.d_loss, var_list=self.d.params)
         self.g_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.g_loss, var_list=self.g.params)
+
 
     def train(self, data):
         '''
@@ -45,7 +50,7 @@ class GAN():
             z_sample = np.random.normal(RANDOM_MEAN, RANDOM_STDDEV, size=[SAMPLE_SIZE, DIM_Z])
 
             clear()
-            print("training beginning!")
+            print("training beginning!\n")
 
             # train
             for epoch in range(MAX_EPOCHS):
