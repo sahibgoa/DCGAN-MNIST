@@ -29,4 +29,7 @@ def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def save_sample(batch, path):
+    # make output directory
+    if not os.path.exists(os.path.dirname(SAVE_PATH)):
+        os.makedirs(os.path.dirname(SAVE_PATH))
     scipy.misc.imsave(path, np.reshape(batch/2 + 0.5, IMAGE_SHAPE))
