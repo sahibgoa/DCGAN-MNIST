@@ -21,15 +21,15 @@ class GAN():
         self.d_loss = tf.reduce_mean(-tf.log(self.d.y_real) - tf.log(1 - self.d.y_fake))
         self.g_loss = tf.reduce_mean(-tf.log(self.d.y_fake))
             
-        if USE_L1:
+        if LAMBDA_L1:
             # L1 regularization
-            self.d_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.abs(x)) for x in self.d.params])
-            self.g_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.abs(x)) for x in self.g.params])
+            self.d_loss += LAMBDA_L1 * tf.reduce_mean([tf.reduce_mean(tf.abs(x)) for x in self.d.params])
+            self.g_loss += LAMBDA_L1 * tf.reduce_mean([tf.reduce_mean(tf.abs(x)) for x in self.g.params])
 
-        if USE_L2:
+        if LAMBDA_L2:
             # L2 regularization
-            self.d_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.d.params])
-            self.g_loss += LAMBDA * tf.reduce_mean([tf.reduce_sum(tf.square(tf.abs(x))) for x in self.g.params])
+            self.d_loss += LAMBDA_L2 * tf.reduce_mean([tf.reduce_mean(tf.square(tf.abs(x))) for x in self.d.params])
+            self.g_loss += LAMBDA_L2 * tf.reduce_mean([tf.reduce_mean(tf.square(tf.abs(x))) for x in self.g.params])
 
         # optimizers
         self.d_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.d_loss, var_list=self.d.params)
@@ -57,8 +57,10 @@ class GAN():
                 # average losses
                 avg_d_loss = avg_g_loss = 0
 
+                iterations = TRAIN_SIZE // BATCH_SIZE
+                
                 # minibatch
-                for iteration in range(TRAIN_SIZE // BATCH_SIZE):
+                for iteration in range(iterations):
                     # next MNIST batch, adjust for most values being 0
                     x_real, _= data.train.next_batch(BATCH_SIZE)
                     x_real = 2 * (x_real - 0.5)
@@ -79,7 +81,7 @@ class GAN():
                     avg_g_loss += g_loss_curr
 
                 # print out average losses and epoch
-                print('epoch: %03d: d=%01.9f g=%01.9f' % (epoch, avg_d_loss / (TRAIN_SIZE // BATCH_SIZE + 1), avg_g_loss / (TRAIN_SIZE // BATCH_SIZE + 1)))
+                print('epoch: %03d: d=%01.9f g=%01.9f' % (epoch, avg_d_loss / iterations, avg_g_loss / iterations))
 
                 # save sample
                 sample = sess.run(self.g.x_fake, feed_dict={self.g.z:z_sample})

@@ -1,17 +1,24 @@
-# tests to run:
+# tests to run
 
-using batch norm: worse
+### put data in https://docs.google.com/spreadsheets/d/1ISHaR3nTLdTy8Ru3aoUbgrqOOHmFU4O6OF6Ra0Y5u_Y/edit?usp=sharing 
 
-using l1 reg: worse
+using batch norm:
 
-using dropout in generator: worse
+using l1 reg:
 
-using xavier initialization: same?
+using l2 reg:
 
-different weight initialization params
+using different lambdas for reg:
 
-different learning rates
+using dropout in generator:
 
-different hidden unit sizes
+using xavier initialization: 
 
-different batch sizes
+different weight initialization params:
+
+different learning rates:
+
+different hidden unit sizes:
+
+different batch sizes:
+

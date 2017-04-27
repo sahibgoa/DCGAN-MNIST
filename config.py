@@ -19,7 +19,7 @@ DIM_Z = 100 # size of input to generator
 DIM_H1 = 150 # size of 1st hidden layer in generator
 DIM_H2 = 300 # size of 2nd hidden layer in generator
 
-KEEP_PROB = 0.5 # for drop out
+KEEP_PROB = 1. # for drop out
 BETA1 = 0.5 # parameter for optimizer
 LEAK = 0.2 # slope of leaky relu
 
@@ -28,6 +28,5 @@ RANDOM_STDDEV = 1. # standard deviation for random input to generator
 
 USE_XAVIER = True # use xavier initializer 
 USE_BIAS = False # use biases, might be better without
-USE_L1 = False # Use L1 regularization
-USE_L2 = False # Use L2 regularization
-LAMBDA = 0.01 # regularization weight
+LAMBDA_L1 = 0 # Use L1 regularization if > 0
+LAMBDA_L2 = 0 # Use L2 regularization if > 0
