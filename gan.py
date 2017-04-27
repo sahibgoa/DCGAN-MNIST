@@ -1,6 +1,6 @@
-"""
+'''
 GAN network that handles the training of the generator and discriminator.
-"""
+'''
 
 from util import *
 from discriminator import *
@@ -9,6 +9,10 @@ from generator import *
 class GAN():
 
     def __init__(self):
+        '''
+        Initializes the GAN by setting up the generator, discriminator, loss values, and optimizers.
+        '''
+
         # generator and discriminator
         self.g = Generator()
         self.d = Discriminator(self.g.x_fake)
@@ -28,14 +32,20 @@ class GAN():
         self.g_optimizer = tf.train.AdamOptimizer(ETA, beta1=BETA1).minimize(self.g_loss, var_list=self.g.params)
 
     def train(self, data):
+        '''
+        Trains the GAN on the given dataset.
+        '''
+
         # launch tf graph
         with tf.Session() as sess:
             # initialize globals
             sess.run(tf.global_variables_initializer())
-            clear()
 
             # same random numbers for all saved samples
             z_sample = np.random.normal(RANDOM_MEAN, RANDOM_STDDEV, size=[SAMPLE_SIZE, DIM_Z])
+
+            clear()
+            print("training beginning!")
 
             # train
             for epoch in range(MAX_EPOCHS):
@@ -64,7 +74,7 @@ class GAN():
                     avg_g_loss += g_loss_curr
 
                 # print out average losses and epoch
-                print("epoch: %03d: d=%01.9f g=%01.9f" % (epoch, avg_d_loss / (TRAIN_SIZE // BATCH_SIZE + 1), avg_g_loss / (TRAIN_SIZE // BATCH_SIZE + 1)))
+                print('epoch: %03d: d=%01.9f g=%01.9f' % (epoch, avg_d_loss / (TRAIN_SIZE // BATCH_SIZE + 1), avg_g_loss / (TRAIN_SIZE // BATCH_SIZE + 1)))
 
                 # save sample
                 sample = sess.run(self.g.x_fake, feed_dict={self.g.z:z_sample})

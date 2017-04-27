@@ -1,7 +1,7 @@
 from PIL import Image
 import os, sys
 
-path = "sketch/"
+path = 'sketch/'
 dirs = os.listdir( path )
 
 def resize():

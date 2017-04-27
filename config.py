@@ -1,6 +1,6 @@
-"""
+'''
  Configuration file for the GAN.
-"""
+'''
 
 import numpy as np
 

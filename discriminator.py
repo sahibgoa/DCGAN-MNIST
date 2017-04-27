@@ -1,12 +1,16 @@
-"""
+'''
 Discriminates between generated and real images.
-"""
+'''
 
 from util import *
 
 class Discriminator(object):
 
     def __init__(self, x_fake):
+        '''
+        Creates the weights and biases for each hidden layer as well as the discriminations of fake and real images.
+        '''
+        
         # inputs
         self.x_real = tf.placeholder(tf.float32, [None, DIM_IM])
         self.x_fake = x_fake
@@ -15,14 +19,14 @@ class Discriminator(object):
         self.x = tf.concat([self.x_real, self.x_fake], axis=0)
 
         # weights of each layer
-        self.w1 = tf_gaussian([DIM_IM, DIM_H2], name="d_w1")
-        self.w2 = tf_gaussian([DIM_H2, DIM_H1], name="d_w2")
-        self.w3 = tf_gaussian([DIM_H1, 1], name="d_w3")
+        self.w1 = tf_gaussian([DIM_IM, DIM_H2], name='d_w1')
+        self.w2 = tf_gaussian([DIM_H2, DIM_H1], name='d_w2')
+        self.w3 = tf_gaussian([DIM_H1, 1], name='d_w3')
 
         # weights of biases
-        self.b1 = tf_zeros([DIM_H2], name="d_b1")
-        self.b2 = tf_zeros([DIM_H1], name="d_b2")
-        self.b3 = tf_zeros([1], name="d_b3")
+        self.b1 = tf_zeros([DIM_H2], name='d_b1')
+        self.b2 = tf_zeros([DIM_H1], name='d_b2')
+        self.b3 = tf_zeros([1], name='d_b3')
 
         # layers
         self.h1 = tf.nn.dropout(tf_relu(tf.matmul(self.x,  self.w1) + self.b1, leaky=True), KEEP_PROB)

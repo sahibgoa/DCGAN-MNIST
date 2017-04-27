@@ -1,6 +1,6 @@
-"""
+'''
 Loads the MNIST data, builds the GAN, and trains it.
-"""
+'''
 
 from tensorflow.examples.tutorials.mnist import input_data
 from gan import *
