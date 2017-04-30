@@ -4,6 +4,8 @@ import numpy as np
 import tensorflow as tf
 from scipy.misc import imsave
 from tensorflow.examples.tutorials.mnist import input_data
+from six.moves import xrange
+import os
 
 # The MNIST dataset has 10 classes, representing the digits 0 through 9.
 NUM_CLASSES = 10
@@ -18,6 +20,8 @@ KEEP_PROB = 0.5
 DIM_Z = 100
 DIM_Y = 10
 DIM_IMAGE = np.prod(IMAGE_SHAPE)
+
+SAVE_DIR = 'out/'
 
 
 class DataDistribution(object):
@@ -258,11 +262,11 @@ def generator(z_input, y_label,
         # create a joint 4-D feature representation of the output of the previous layer and the label
         # to serve as a 7x7 input image for the next de-convolution layer
         y_ = tf.reshape(y_label, [batch_size, 1, 1, DIM_Y])
-        g2 = tf.reshape(g2, [batch_size, IMAGE_SIZE / 4, IMAGE_SIZE / 4, dim_con * 2])
+        g2 = tf.reshape(g2, [batch_size, IMAGE_SIZE // 4, IMAGE_SIZE // 4, dim_con * 2])
         g2 = concat(g2, y_)
 
         # first layer of deconvolution produces a larger 14x14 image
-        g3 = deconv2d(g2, [batch_size, IMAGE_SIZE / 2, IMAGE_SIZE / 2, dim_con * 2], 'g3')
+        g3 = deconv2d(g2, [batch_size, IMAGE_SIZE // 2, IMAGE_SIZE // 2, dim_con * 2], 'g3')
 
         # apply batch normalization to ___
         # apply ReLU to stabilize the output of this layer
@@ -445,6 +449,13 @@ class GAN(object):
 
 
 def main(args):
+    # make save directories
+    if not os.path.exists(SAVE_DIR):
+            os.makedirs(SAVE_DIR)
+    for index in range(10):
+        digit_dir = SAVE_DIR + str(index) + '/'
+        if not os.path.exists(digit_dir):
+            os.makedirs(digit_dir)
     model = GAN(
         DataDistribution(args.data_dir),
         GeneratorDistribution(),
@@ -471,7 +482,7 @@ def parse_args():
     parser.add_argument('--epoch-size', type=int, default=100,
                         help='size of each epoch')
     parser.add_argument('--out', type=str,
-                        default='/Users/shantanusinghal/workspace/spike/gan/out/%d/sample_%04d.jpg',
+                        default=SAVE_DIR + '%d/sample_%04d.jpg',
                         help='output location for writing samples from G')
 
     return parser.parse_args()
