@@ -90,9 +90,7 @@ def linear(x_input, dim_in, dim_out, name='linear'):
 
 def lrelu(x, leak=0.2, name="lrelu"):
     with tf.variable_scope(name):
-        f1 = 0.5 * (1 + leak)
-        f2 = 0.5 * (1 - leak)
-        return f1 * x + f2 * tf.abs(x)
+        return tf.maximum(x, .2*x)
 
 
 def concat(x, y):
@@ -445,15 +443,15 @@ class GAN(object):
                     self.z: self.gen.image_samples(10)
                 })
                 for index in range(10):
-                    imsave(self.out % (index, epoch), np.reshape(samples[index], IMAGE_SHAPE))
+                    imsave(self.out  + '%d/sample_%04d.jpg' % (index, epoch), np.reshape(samples[index], IMAGE_SHAPE))
 
 
 def main(args):
     # make save directories
-    if not os.path.exists(SAVE_DIR):
-            os.makedirs(SAVE_DIR)
+    if not os.path.exists(args.out):
+            os.makedirs(args.out)
     for index in range(10):
-        digit_dir = SAVE_DIR + str(index) + '/'
+        digit_dir = args.out + str(index) + '/'
         if not os.path.exists(digit_dir):
             os.makedirs(digit_dir)
     model = GAN(
@@ -482,7 +480,7 @@ def parse_args():
     parser.add_argument('--epoch-size', type=int, default=100,
                         help='size of each epoch')
     parser.add_argument('--out', type=str,
-                        default=SAVE_DIR + '%d/sample_%04d.jpg',
+                        default=SAVE_DIR,
                         help='output location for writing samples from G')
 
     return parser.parse_args()
