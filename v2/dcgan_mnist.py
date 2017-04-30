@@ -18,7 +18,7 @@ IMAGE_SHAPE = [28, 28]
 LEAK = 0.2
 KEEP_PROB = 0.5
 DIM_Z = 100
-DIM_Y = 10
+DIM_Y = NUM_CLASSES
 DIM_IMAGE = np.prod(IMAGE_SHAPE)
 
 SAVE_DIR = 'out/'
@@ -428,21 +428,10 @@ class GAN(object):
 
                 print('{}: avg_d {}\tavg_g {}'.format(epoch, loss_d_sum / num_steps, loss_g_sum / num_steps))
                 samples = session.run(self.S, feed_dict={
-                    self.y: [
-                        [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
-                    ],
-                    self.z: self.gen.image_samples(10)
+                    self.y: np.diag([1 for i in range(NUM_CLASSES)]),
+                    self.z: self.gen.image_samples(NUM_CLASSES)
                 })
-                for index in range(10):
+                for index in range(NUM_CLASSES):
                     imsave(self.out  + '%d/sample_%04d.jpg' % (index, epoch), np.reshape(samples[index], IMAGE_SHAPE))
 
 
@@ -450,7 +439,7 @@ def main(args):
     # make save directories
     if not os.path.exists(args.out):
             os.makedirs(args.out)
-    for index in range(10):
+    for index in range(NUM_CLASSES):
         digit_dir = args.out + str(index) + '/'
         if not os.path.exists(digit_dir):
             os.makedirs(digit_dir)
