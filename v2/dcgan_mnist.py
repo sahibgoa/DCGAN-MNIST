@@ -47,6 +47,7 @@ class DataDistribution(object):
         return self.data.train.num_examples
 
 
+
 # TODO try MNIST fake data
 class GeneratorDistribution(object):
     """
@@ -65,6 +66,7 @@ class GeneratorDistribution(object):
         :return: batch of samples of specified size, each with a noise vector
         """
         return np.random.normal(0, 1, size=[batch_size, self.sample_dim])
+
 
 
 def linear(x_input, dim_in, dim_out, name='linear'):
@@ -344,7 +346,8 @@ def discriminator(x_image, y_label, batch_size,
         return tf.nn.sigmoid(d4), d4
 
 
-class GAN(object):
+
+class DCGAN(object):
     def __init__(self, data, gen, batch_size, epoch_size, learning_rate, decay_rate, out):
         self.data = data
         self.gen = gen
@@ -355,6 +358,7 @@ class GAN(object):
         self.out = out
 
         self._create_model()
+
 
     def _create_model(self):
         """
@@ -395,6 +399,7 @@ class GAN(object):
         self.opt_g = tf.train.AdamOptimizer(learning_rate=self.learning_rate, beta1=self.decay_rate) \
             .minimize(self.loss_g, var_list=self.params_g)
 
+
     def train(self):
         """
         To train the model, we draw samples from the data distribution and the noise distribution,
@@ -428,22 +433,16 @@ class GAN(object):
 
                 print('{}: avg_d {}\tavg_g {}'.format(epoch, loss_d_sum / num_steps, loss_g_sum / num_steps))
                 samples = session.run(self.S, feed_dict={
-                    self.y: np.diag([1 for i in range(NUM_CLASSES)]),
+                    self.y: np.identity(NUM_CLASSES),
                     self.z: self.gen.image_samples(NUM_CLASSES)
                 })
-                for index in range(NUM_CLASSES):
-                    imsave(self.out  + '%d/sample_%04d.jpg' % (index, epoch), np.reshape(samples[index], IMAGE_SHAPE))
+                save_samples(self.out, samples, epoch)
+
 
 
 def main(args):
-    # make save directories
-    if not os.path.exists(args.out):
-            os.makedirs(args.out)
-    for index in range(NUM_CLASSES):
-        digit_dir = args.out + str(index) + '/'
-        if not os.path.exists(digit_dir):
-            os.makedirs(digit_dir)
-    model = GAN(
+    # build dcgan
+    model = DCGAN(
         DataDistribution(args.data_dir),
         GeneratorDistribution(),
         args.batch_size,
@@ -452,6 +451,8 @@ def main(args):
         args.decay_rate,
         args.out
     )
+
+    # train dcgan
     model.train()
 
 
@@ -471,8 +472,26 @@ def parse_args():
     parser.add_argument('--out', type=str,
                         default=SAVE_DIR,
                         help='output location for writing samples from G')
-
     return parser.parse_args()
+
+
+def save_samples(directory, samples, epoch):
+    # make save directories if needed
+    if not os.path.exists(directory + 'combined/'):
+        os.makedirs(directory + 'combined/')
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    for index in range(NUM_CLASSES):
+        digit_directory = directory + str(index) + '/'
+        if not os.path.exists(digit_directory):
+            os.makedirs(digit_directory)
+
+    # save an image for each digit
+    for index in range(NUM_CLASSES):
+        imsave(directory + '%d/digit_%d_%03d.jpg' % (index, index, epoch), np.reshape(samples[index], IMAGE_SHAPE))
+
+    # save one image with all ten samples, stacked vertically
+    imsave(directory + 'combined/combined_%03d.jpg' % epoch, np.reshape(samples, np.multiply(IMAGE_SHAPE,[NUM_CLASSES,1])))
 
 
 if __name__ == '__main__':
