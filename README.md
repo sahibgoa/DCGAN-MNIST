@@ -9,14 +9,14 @@ python, numpy, scipy, tensorflow (gpu version recommended).
 ### Running
 `python main.py`
 
-arguments
-`--data_dir <directory for storing input data>`
-`--use_mnist` to use the MNIST data set, otherwise point to sketchy data set
-`--learning-rate <learning rate>`
-`--decay-rate <decay rate>`
-`--batch-size <batch size>`
-`--epoch-size <epoch size>`
-`--out <directory for storing output from generator>`
+arguments <br />
+`--data_dir <directory for storing input data>` <br />
+`--use_mnist` to use the MNIST data set, otherwise point to sketchy data set <br />
+`--learning-rate <learning rate>` <br />
+`--decay-rate <decay rate>` <br />
+`--batch-size <batch size>` <br />
+`--epoch-size <epoch size>` <br />
+`--out <directory for storing output from generator>` <br />
 
 
 ### Compatability
