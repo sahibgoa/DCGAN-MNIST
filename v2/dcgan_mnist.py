@@ -479,7 +479,7 @@ def parse_args():
     parser.add_argument('--data_dir', type=str,
                         default='/tmp/tensorflow/mnist/input_data',
                         help='Directory for storing input data')
-    parser.add_argument('--use_mnist', type=bool, default=True,
+    parser.add_argument('--use_mnist', action="store_true",
                         help='true if using MNIST dataset, false if using sketchy dataset')
     parser.add_argument('--learning-rate', type=int, default=0.0002,
                         help='the learning rate for training')
