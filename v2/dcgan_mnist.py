@@ -441,6 +441,24 @@ class DCGAN(object):
 
 
 def main(args):
+    # set params for dataset
+    global NUM_CLASSES
+    global IMAGE_SIZE
+    global IMAGE_SHAPE
+    global DIM_Y
+    global DIM_IMAGE
+
+    if ~args.use_mnist:
+        # 125 types of images
+        NUM_CLASSES = 125
+
+        # downsized images are 128 x 128
+        IMAGE_SIZE = 128
+        IMAGE_SHAPE = [128, 128]
+
+        DIM_Y = NUM_CLASSES
+        DIM_IMAGE = np.prod(IMAGE_SHAPE)
+
     # build dcgan
     model = DCGAN(
         DataDistribution(args.data_dir),
@@ -461,6 +479,8 @@ def parse_args():
     parser.add_argument('--data_dir', type=str,
                         default='/tmp/tensorflow/mnist/input_data',
                         help='Directory for storing input data')
+    parser.add_argument('--use_mnist', type=bool, default=True,
+                        help='true if using MNIST dataset, false if using sketchy dataset')
     parser.add_argument('--learning-rate', type=int, default=0.0002,
                         help='the learning rate for training')
     parser.add_argument('--decay-rate', type=int, default=0.5,
