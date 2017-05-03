@@ -20,7 +20,7 @@ arguments <br />
 
 ### Running `trainer` on GCloud ML-Engine
 
-```python
+```bash
 JOB_DIR='gs://uw-cs760-dcgan/job-dir/' # directoy on GCS
 JOB_ID='dcgan_job_23' # unique job-id
 
