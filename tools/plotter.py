@@ -3,10 +3,7 @@ import plotly as ply
 import plotly.graph_objs as go
 
 class ScatterPlotter(object):
-    """Plots one variable over another.
-
-    Supports plotting of multiple lines on the same chart.
-    """
+    """Plots one variable over multiple others on a 2D scatter plot."""
     def __init__(self, title, x_label, y_labels):
         """Caches plot information for later display.
 
