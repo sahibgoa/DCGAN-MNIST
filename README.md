@@ -18,6 +18,22 @@ arguments <br />
 `--epoch-size <epoch size>` <br />
 `--out <directory for storing output from generator>` <br />
 
+### Running `trainer` on GCloud ML-Engine
+
+```python
+JOB_DIR='gs://uw-cs760-dcgan/job-dir/' # directoy on GCS
+JOB_ID='dcgan_job_23' # unique job-id
+
+gcloud ml-engine jobs submit training JOB_ID \
+--package-path trainer/ \
+--module-name trainer.task \
+--job-dir JOB_DIR \
+--staging-bucket 'gs://uw-cs760-dcgan/' \
+--region 'us-central1' \
+--scale-tier 'BASIC_GPU' \
+-- \
+--data-dir '/tmp/tensorflow/mnist/input_data/'
+```
 
 ### Compatability
 Only tested on windows with python 3.5.2, numpy+mkl 1.12.1, scipy 0.19.0, tensorflow-gpu 1.0.1.
