@@ -448,7 +448,7 @@ def main(args):
     global DIM_Y
     global DIM_IMAGE
 
-    if ~args.use_mnist:
+    if args.use_sketch:
         # 125 types of images
         NUM_CLASSES = 125
 
@@ -479,8 +479,8 @@ def parse_args():
     parser.add_argument('--data_dir', type=str,
                         default='/tmp/tensorflow/mnist/input_data',
                         help='Directory for storing input data')
-    parser.add_argument('--use_mnist', action="store_true",
-                        help='true if using MNIST dataset, false if using sketchy dataset')
+    parser.add_argument('--use_sketch', action="store_true",
+                        help='true if using sketchy dataset, false (default) if using MNIST dataset')
     parser.add_argument('--learning-rate', type=int, default=0.0002,
                         help='the learning rate for training')
     parser.add_argument('--decay-rate', type=int, default=0.5,
