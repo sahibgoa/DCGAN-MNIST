@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 from datetime import datetime
+from scipy.misc import imsave
 from util import linear, lrelu, concat, deconv2d, cnn_block, GeneratorDistribution
 
 DIM_Z = 100
@@ -9,6 +10,7 @@ DIM_Z = 100
 DIM_Y = 10
 # The MNIST images are always 28x28 pixels.
 IMAGE_SIZE = 28
+IMAGE_SHAPE = [IMAGE_SIZE, IMAGE_SIZE]
 DIM_IMAGE = np.prod([IMAGE_SIZE, IMAGE_SIZE])
 
 # Hyper-Parameters
@@ -28,6 +30,8 @@ class DCGAN(object):
         self.job_dir = job_dir
 
         self._create_learning_model()
+        self._create_training_summary()
+        self._create_validation_summary()
 
     def _create_learning_model(self):
         """
@@ -69,9 +73,9 @@ class DCGAN(object):
 
         # Define accuracy score for real and fake data
         self.accuracy_real = tf.reduce_mean(
-            tf.cast(tf.equal(tf.argmax(self.y, 1), tf.argmax(self.D_real, 1)), tf.float32))
+            tf.cast(tf.equal(tf.round(self.D_real), tf.ones_like(self.D_real)), tf.float32))
         self.accuracy_fake = tf.reduce_mean(
-            tf.cast(tf.equal(tf.argmax(self.y, 1), tf.argmax(self.D_fake, 1)), tf.float32))
+            tf.cast(tf.equal(tf.round(self.D_fake), tf.zeros_like(self.D_fake)), tf.float32))
 
         # build a sampling net for validation
         labels_all = tf.get_variable('labels_all', shape=[10, 10], initializer=tf.constant_initializer([
@@ -90,15 +94,33 @@ class DCGAN(object):
                                 shape=[10, DIM_Z],
                                 initializer=tf.constant_initializer(self.gen.image_samples(10)))
         self.sampler = generator(noise, labels_all, reuse=True)
+        self.sampler_pred = tf.round(discriminator(self.sampler, labels_all, reuse=True)[0])
         self.sampler_accuracy = tf.reduce_mean(tf.cast(tf.equal(
-            tf.argmax(labels_all, 1),
-            tf.argmax(discriminator(self.sampler, labels_all, reuse=True), 1)), tf.float32))
+            self.sampler_pred, tf.zeros_like(self.sampler_pred)), tf.float32))
+
+        # Define scalar summaries for training and validation
+        with tf.variable_scope('shared'):
+            tf.summary.scalar('loss_discriminator_real', self.loss_D_real)
+            tf.summary.scalar('loss_discriminator_fake', self.loss_D_fake)
+            tf.summary.scalar('accuracy_real', self.accuracy_real)
+            tf.summary.scalar('accuracy_fake', self.accuracy_fake)
+            tf.summary.scalar('loss_generator', self.loss_g)
+
+        # Define sample image summary for validation
+        with tf.variable_scope('validation'):
+            tf.summary.scalar('sample_accuracy', self.sampler_accuracy)
+            tf.summary.image('sample_images', self.sampler, max_outputs=10)
 
     def _create_training_summary(self):
-    	pass
+        self.training_summaries = tf.summary.merge([
+            tf.get_collection(tf.GraphKeys.SUMMARIES, scope='generator'),
+            tf.get_collection(tf.GraphKeys.SUMMARIES, scope='discriminator'),
+            tf.get_collection(tf.GraphKeys.SUMMARIES, scope='shared')])
 
     def _create_validation_summary(self):
-        pass
+        self.validation_summaries = tf.summary.merge([
+            tf.get_collection(tf.GraphKeys.SUMMARIES, scope='shared'),
+            tf.get_collection(tf.GraphKeys.SUMMARIES, scope='validation')])
 
     def train(self):
         """
@@ -106,6 +128,7 @@ class DCGAN(object):
         and alternate between optimizing the parameters of D and G.
         """
         with tf.Session() as session:
+            global_step = 0
             saver = tf.train.Saver()
             session.run(tf.global_variables_initializer())
             writer_train = tf.summary.FileWriter(self.job_dir + '/train', session.graph)
@@ -116,25 +139,53 @@ class DCGAN(object):
                 num_steps = self.data.num_training_examples() // self.batch_size
 
                 for step in xrange(num_steps):
+                    global_step += 1
                     x, y = self.data.train(self.batch_size)
                     # update discriminator
-                    loss_d, acc_r, acc_f, _, _, _ = session.run([self.loss_d, self.accuracy_real, self.accuracy_fake,
-                                                                 self.loss_D_real, self.loss_D_fake, self.opt_d],
-                                                                feed_dict={
-                                                                    self.x: x,
-                                                                    self.y: y,
-                                                                    self.z: self.gen.image_samples(self.batch_size)})
+                    session.run(self.opt_d, feed_dict={
+                        self.x: x,
+                        self.y: y,
+                        self.z: self.gen.image_samples(self.batch_size)})
                     # update generator
-                    loss_g = session.run([self.loss_g, self.opt_g], feed_dict={
+                    session.run(self.opt_g, feed_dict={
                         self.y: y,
                         self.z: self.gen.image_samples(self.batch_size)
                     })
+                    # at defined intervals log the metrics
+                    if step % self.log_every == 0:
+                        loss_d, acc_r, acc_f, loss_g, summary = session.run(
+                            [self.loss_d, self.accuracy_real, self.accuracy_fake, self.loss_g, self.training_summaries],
+                            feed_dict={
+                                self.x: x,
+                                self.y: y,
+                                self.z: self.gen.image_samples(self.batch_size),
+                            })
+                        writer_train.add_summary(summary, global_step)
+                        print('\x1b[1;30;40m[TRAINING] Epoch: %s Step: %s (GlobalStep: %s) at %s\x1b[0m' %
+                              (epoch, step, global_step, datetime.now()))
+                        print('\x1b[1;33;40m[TRAINING] { acc_x: %s, acc_x\': %s, loss_d: %s, loss_g: %s }\x1b[0m'
+                              % (acc_r, acc_f, loss_d, loss_g))
 
-                    print('[TRAINING] Epoch: %s Step: %s at %s [acc_x: %s acc_x\': %s loss_d: %s loss_g: %s]'
-                          % (epoch, step, datetime.now(), loss_d, acc_r, acc_f, loss_g))
+                        x, y = self.data.validation(self.batch_size)
+                        pred, acc, summary = session.run(
+                            [self.sampler_pred, self.sampler_accuracy, self.validation_summaries],
+                            feed_dict={
+                                self.x: x,
+                                self.y: y,
+                                self.z: self.gen.image_samples(self.batch_size),
+                            })
+                        writer_validate.add_summary(summary, global_step)
+                        print('\x1b[1;32;40m[VALIDATING] { acc_x\': %s, pred: [%s]}\x1b[0m'
+                              % (acc, ', '.join([str(int(x[0])) for x in pred])))
 
-            # at the end save a checkpoint for all variables
-            save_path = saver.save(session, self.job_dir)
+                # at the end of each epoch save a batch of sample images for each digit
+                samples = session.run(self.sampler)
+                for index in range(0, 10):
+                    imsave(self.job_dir + ('/valid/imsave/%d/sample_%04d.jpg' % (index, epoch)),
+                           np.reshape(samples[index], IMAGE_SHAPE))
+
+            # at the end of training save a checkpoint for all variables
+            save_path = saver.save(session, self.job_dir, global_step=epoch)
             print("saved checkpoint to %s" % save_path)
 
 
