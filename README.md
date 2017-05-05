@@ -33,6 +33,9 @@ gcloud ml-engine jobs submit training JOB_ID \
 --scale-tier 'BASIC_GPU' \
 -- \
 --data-dir '/tmp/tensorflow/mnist/input_data/'
+
+# launch tensorboard to view plots and images; and to download metrics
+tensorboard --logdir=JOB_DIR --port 8088
 ```
 
 ### Compatability
