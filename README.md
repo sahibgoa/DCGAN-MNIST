@@ -1,4 +1,4 @@
-# send-doods
+# DCGAN-MNIST
 
 ### About
 Generative Adversarial Network implementation.
